@@ -2,9 +2,9 @@ name: Build 1.12 (until1.12.2 Branch)
 
 on:
   push:
-    branches: [ until1.12.2 ]
+    branches: [ until1.12.2, master ]
   pull_request:
-    branches: [ until1.12.2 ]
+    branches: [ until1.12.2, master ]
 
 permissions:
   contents: read
@@ -24,10 +24,12 @@ jobs:
         cache: 'gradle'
     
     - name: Build with Gradle
-      run: gradle build
+      run: |
+        cd 1.12.2
+        gradle build
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: cocoainput-1.12
-        path: build/libs/*.jar
+        path: 1.12.2/build/libs/*.jar

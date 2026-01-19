@@ -76,29 +76,29 @@ jobs:
     - name: Set executable permissions for gradlew (Linux/macOS)
       if: matrix.platform != 'windows'
       run: |
-        chmod +x forge/gradlew
-        chmod +x fabric/gradlew
+        chmod +x 1.18.2/forge/gradlew
+        chmod +x 1.18.2/fabric/gradlew
     
     - name: Build Forge mod
       shell: ${{ matrix.gradle_shell }}
       run: |
-        cd forge
+        cd 1.18.2/forge
         ${{ matrix.gradle_cmd }} build --no-daemon
     
     - name: Build Fabric mod
       shell: ${{ matrix.gradle_shell }}
       run: |
-        cd fabric
+        cd 1.18.2/fabric
         ${{ matrix.gradle_cmd }} build --no-daemon
     
     - name: Upload Forge artifacts
       uses: actions/upload-artifact@v4
       with:
         name: forge-mod-${{ matrix.platform }}
-        path: forge/build/libs/*.jar
+        path: 1.18.2/forge/build/libs/*.jar
     
     - name: Upload Fabric artifacts
       uses: actions/upload-artifact@v4
       with:
         name: fabric-mod-${{ matrix.platform }}
-        path: fabric/build/libs/*.jar
+        path: 1.18.2/fabric/build/libs/*.jar
