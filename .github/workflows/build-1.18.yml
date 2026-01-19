@@ -6,9 +6,34 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux
+            build_script: build_lib_for_x11.sh
+            native_deps: build-essential libx11-dev libxtst-dev
+            gradle_cmd: ./gradlew
+            shell_type: bash
+          - os: macos-13
+            platform: macos
+            build_script: build_lib_for_mac.sh
+            native_deps: ''
+            gradle_cmd: ./gradlew
+            shell_type: bash
+          - os: windows-2022
+            platform: windows
+            build_script: build_lib_for_win.sh
+            native_deps: ''
+            gradle_cmd: gradlew.bat
+            shell_type: cmd
     
     steps:
     - uses: actions/checkout@v4
@@ -20,92 +45,14 @@ jobs:
         java-version: '17'
         cache: 'gradle'
     
-    - name: Install build dependencies
+    - name: Install build dependencies (Linux)
+      if: matrix.platform == 'linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libx11-dev libxtst-dev
+        sudo apt-get install -y ${{ matrix.native_deps }}
     
-    - name: Build native library for Linux
-      run: chmod +x build_lib_for_x11.sh && ./build_lib_for_x11.sh
-    
-    - name: Build Forge mod
-      run: |
-        cd forge
-        chmod +x gradlew
-        ./gradlew build --no-daemon
-    
-    - name: Build Fabric mod
-      run: |
-        cd fabric
-        chmod +x gradlew
-        ./gradlew build --no-daemon
-    
-    - name: Upload Forge artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: forge-mod-linux
-        path: forge/build/libs/*.jar
-    
-    - name: Upload Fabric artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: fabric-mod-linux
-        path: fabric/build/libs/*.jar
-
-  build-macos:
-    runs-on: macos-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-        cache: 'gradle'
-    
-    - name: Build native library for macOS
-      run: chmod +x build_lib_for_mac.sh && ./build_lib_for_mac.sh
-    
-    - name: Build Forge mod
-      run: |
-        cd forge
-        chmod +x gradlew
-        ./gradlew build --no-daemon
-    
-    - name: Build Fabric mod
-      run: |
-        cd fabric
-        chmod +x gradlew
-        ./gradlew build --no-daemon
-    
-    - name: Upload Forge artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: forge-mod-macos
-        path: forge/build/libs/*.jar
-    
-    - name: Upload Fabric artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: fabric-mod-macos
-        path: fabric/build/libs/*.jar
-
-  build-windows:
-    runs-on: windows-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-        cache: 'gradle'
-    
-    - name: Set up MinGW
+    - name: Set up MinGW (Windows)
+      if: matrix.platform == 'windows'
       uses: msys2/setup-msys2@v2
       with:
         update: true
@@ -113,30 +60,51 @@ jobs:
           mingw-w64-x86_64-toolchain
           make
     
-    - name: Build native library for Windows
+    - name: Build native library (Windows)
+      if: matrix.platform == 'windows'
       shell: msys2 {0}
-      run: chmod +x build_lib_for_win.sh && ./build_lib_for_win.sh
+      run: chmod +x ${{ matrix.build_script }} && ./${{ matrix.build_script }}
     
-    - name: Build Forge mod
+    - name: Build native library (Linux/macOS)
+      if: matrix.platform != 'windows'
+      run: chmod +x ${{ matrix.build_script }} && ./${{ matrix.build_script }}
+    
+    - name: Build Forge mod (Windows)
+      if: matrix.platform == 'windows'
       shell: cmd
       run: |
         cd forge
-        gradlew.bat build --no-daemon
+        ${{ matrix.gradle_cmd }} build --no-daemon
     
-    - name: Build Fabric mod
+    - name: Build Forge mod (Linux/macOS)
+      if: matrix.platform != 'windows'
+      run: |
+        cd forge
+        chmod +x gradlew
+        ${{ matrix.gradle_cmd }} build --no-daemon
+    
+    - name: Build Fabric mod (Windows)
+      if: matrix.platform == 'windows'
       shell: cmd
       run: |
         cd fabric
-        gradlew.bat build --no-daemon
+        ${{ matrix.gradle_cmd }} build --no-daemon
+    
+    - name: Build Fabric mod (Linux/macOS)
+      if: matrix.platform != 'windows'
+      run: |
+        cd fabric
+        chmod +x gradlew
+        ${{ matrix.gradle_cmd }} build --no-daemon
     
     - name: Upload Forge artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: forge-mod-windows
+        name: forge-mod-${{ matrix.platform }}
         path: forge/build/libs/*.jar
     
     - name: Upload Fabric artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: fabric-mod-windows
+        name: fabric-mod-${{ matrix.platform }}
         path: fabric/build/libs/*.jar

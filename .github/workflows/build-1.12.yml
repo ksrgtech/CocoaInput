@@ -6,9 +6,12 @@ on:
   pull_request:
     branches: [ until1.12.2 ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - uses: actions/checkout@v4
