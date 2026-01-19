@@ -1,0 +1,30 @@
+name: Build 1.12 (until1.12.2 Branch)
+
+on:
+  push:
+    branches: [ until1.12.2 ]
+  pull_request:
+    branches: [ until1.12.2 ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '8'
+        cache: 'gradle'
+    
+    - name: Build with Gradle
+      run: gradle build
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: cocoainput-1.12
+        path: build/libs/*.jar

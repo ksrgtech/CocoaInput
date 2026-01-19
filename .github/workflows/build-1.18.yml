@@ -1,0 +1,142 @@
+name: Build 1.18 (Master Branch)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libx11-dev libxtst-dev
+    
+    - name: Build native library for Linux
+      run: chmod +x build_lib_for_x11.sh && ./build_lib_for_x11.sh
+    
+    - name: Build Forge mod
+      run: |
+        cd forge
+        chmod +x gradlew
+        ./gradlew build --no-daemon
+    
+    - name: Build Fabric mod
+      run: |
+        cd fabric
+        chmod +x gradlew
+        ./gradlew build --no-daemon
+    
+    - name: Upload Forge artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: forge-mod-linux
+        path: forge/build/libs/*.jar
+    
+    - name: Upload Fabric artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: fabric-mod-linux
+        path: fabric/build/libs/*.jar
+
+  build-macos:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Build native library for macOS
+      run: chmod +x build_lib_for_mac.sh && ./build_lib_for_mac.sh
+    
+    - name: Build Forge mod
+      run: |
+        cd forge
+        chmod +x gradlew
+        ./gradlew build --no-daemon
+    
+    - name: Build Fabric mod
+      run: |
+        cd fabric
+        chmod +x gradlew
+        ./gradlew build --no-daemon
+    
+    - name: Upload Forge artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: forge-mod-macos
+        path: forge/build/libs/*.jar
+    
+    - name: Upload Fabric artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: fabric-mod-macos
+        path: fabric/build/libs/*.jar
+
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Set up MinGW
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-x86_64-toolchain
+          make
+    
+    - name: Build native library for Windows
+      shell: msys2 {0}
+      run: chmod +x build_lib_for_win.sh && ./build_lib_for_win.sh
+    
+    - name: Build Forge mod
+      shell: cmd
+      run: |
+        cd forge
+        gradlew.bat build --no-daemon
+    
+    - name: Build Fabric mod
+      shell: cmd
+      run: |
+        cd fabric
+        gradlew.bat build --no-daemon
+    
+    - name: Upload Forge artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: forge-mod-windows
+        path: forge/build/libs/*.jar
+    
+    - name: Upload Fabric artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: fabric-mod-windows
+        path: fabric/build/libs/*.jar
