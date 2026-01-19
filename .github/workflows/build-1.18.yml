@@ -21,19 +21,16 @@ jobs:
             build_script: build_lib_for_x11.sh
             native_deps: build-essential libx11-dev libxtst-dev
             gradle_cmd: ./gradlew
-            shell_type: bash
           - os: macos-13
             platform: macos
             build_script: build_lib_for_mac.sh
             native_deps: ''
             gradle_cmd: ./gradlew
-            shell_type: bash
           - os: windows-2022
             platform: windows
             build_script: build_lib_for_win.sh
             native_deps: ''
             gradle_cmd: gradlew.bat
-            shell_type: cmd
     
     steps:
     - uses: actions/checkout@v4
@@ -69,6 +66,12 @@ jobs:
       if: matrix.platform != 'windows'
       run: chmod +x ${{ matrix.build_script }} && ./${{ matrix.build_script }}
     
+    - name: Set executable permissions for gradlew (Linux/macOS)
+      if: matrix.platform != 'windows'
+      run: |
+        chmod +x forge/gradlew
+        chmod +x fabric/gradlew
+    
     - name: Build Forge mod (Windows)
       if: matrix.platform == 'windows'
       shell: cmd
@@ -80,7 +83,6 @@ jobs:
       if: matrix.platform != 'windows'
       run: |
         cd forge
-        chmod +x gradlew
         ${{ matrix.gradle_cmd }} build --no-daemon
     
     - name: Build Fabric mod (Windows)
@@ -94,7 +96,6 @@ jobs:
       if: matrix.platform != 'windows'
       run: |
         cd fabric
-        chmod +x gradlew
         ${{ matrix.gradle_cmd }} build --no-daemon
     
     - name: Upload Forge artifacts
