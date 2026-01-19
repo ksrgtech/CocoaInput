@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
@@ -41,13 +41,13 @@ jobs:
         ./gradlew build --no-daemon
     
     - name: Upload Forge artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: forge-mod-linux
         path: forge/build/libs/*.jar
     
     - name: Upload Fabric artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fabric-mod-linux
         path: fabric/build/libs/*.jar
@@ -56,10 +56,10 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
@@ -81,13 +81,13 @@ jobs:
         ./gradlew build --no-daemon
     
     - name: Upload Forge artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: forge-mod-macos
         path: forge/build/libs/*.jar
     
     - name: Upload Fabric artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fabric-mod-macos
         path: fabric/build/libs/*.jar
@@ -96,10 +96,10 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
@@ -130,13 +130,13 @@ jobs:
         gradlew.bat build --no-daemon
     
     - name: Upload Forge artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: forge-mod-windows
         path: forge/build/libs/*.jar
     
     - name: Upload Fabric artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fabric-mod-windows
         path: fabric/build/libs/*.jar
