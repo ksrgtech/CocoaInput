@@ -21,7 +21,7 @@ To compile them, run one of below scripts which is your platform.
     - build_lib_for_win.sh - For Windows
     - (build_lib_all.sh - For all platform, You should create remote_build.sh to build macOS lib remotely.)
 
-### For Minecraft 1.12.2
+### For Minecraft 1.12.2 (Forge only)
 3. Compile Forge Mod<br />
 Type below command. The mod will be located in "1.12.2/build/libs".
 ```Bash
