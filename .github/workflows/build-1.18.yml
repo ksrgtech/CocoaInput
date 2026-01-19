@@ -63,7 +63,13 @@ jobs:
           mingw-w64-x86_64-toolchain
           make
     
-    - name: Build native library
+    - name: Build native library (Windows)
+      if: matrix.platform == 'windows'
+      shell: ${{ matrix.build_shell }}
+      run: ./${{ matrix.build_script }}
+    
+    - name: Build native library (Linux/macOS)
+      if: matrix.platform != 'windows'
       shell: ${{ matrix.build_shell }}
       run: chmod +x ${{ matrix.build_script }} && ./${{ matrix.build_script }}
     
