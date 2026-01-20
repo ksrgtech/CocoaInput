@@ -24,8 +24,6 @@ jobs:
             build_script: build_lib_for_x11.sh
             native_deps: build-essential libx11-dev libxtst-dev
             gradle_cmd: gradle
-            build_shell: bash
-            gradle_shell: bash
             mod_type: forge
             
           # 1.18.2 Forge builds
@@ -36,8 +34,6 @@ jobs:
             build_script: build_lib_for_x11.sh
             native_deps: build-essential libx11-dev libxtst-dev
             gradle_cmd: ./gradlew
-            build_shell: bash
-            gradle_shell: bash
             mod_type: forge
             
           - version: "1.18.2"
@@ -47,8 +43,6 @@ jobs:
             build_script: build_lib_for_mac.sh
             native_deps: ''
             gradle_cmd: ./gradlew
-            build_shell: bash
-            gradle_shell: bash
             mod_type: forge
             
           - version: "1.18.2"
@@ -58,8 +52,6 @@ jobs:
             build_script: build_lib_for_win.sh
             native_deps: ''
             gradle_cmd: gradlew.bat
-            build_shell: msys2 {0}
-            gradle_shell: cmd
             mod_type: forge
             
           # 1.18.2 Fabric builds
@@ -70,8 +62,6 @@ jobs:
             build_script: build_lib_for_x11.sh
             native_deps: build-essential libx11-dev libxtst-dev
             gradle_cmd: ./gradlew
-            build_shell: bash
-            gradle_shell: bash
             mod_type: fabric
             
           - version: "1.18.2"
@@ -81,8 +71,6 @@ jobs:
             build_script: build_lib_for_mac.sh
             native_deps: ''
             gradle_cmd: ./gradlew
-            build_shell: bash
-            gradle_shell: bash
             mod_type: fabric
             
           - version: "1.18.2"
@@ -92,8 +80,6 @@ jobs:
             build_script: build_lib_for_win.sh
             native_deps: ''
             gradle_cmd: gradlew.bat
-            build_shell: msys2 {0}
-            gradle_shell: cmd
             mod_type: fabric
     
     steps:
@@ -123,12 +109,12 @@ jobs:
     
     - name: Build native library (Windows)
       if: matrix.platform == 'windows'
-      shell: ${{ matrix.build_shell }}
+      shell: msys2 {0}
       run: ./${{ matrix.build_script }}
     
     - name: Build native library (Linux/macOS)
       if: matrix.platform != 'windows'
-      shell: ${{ matrix.build_shell }}
+      shell: bash
       run: chmod +x ${{ matrix.build_script }} && ./${{ matrix.build_script }}
     
     - name: Set executable permissions for gradlew (Linux/macOS, 1.18.2)
@@ -137,14 +123,21 @@ jobs:
     
     - name: Build 1.12.2 mod
       if: matrix.version == '1.12.2'
-      shell: ${{ matrix.gradle_shell }}
+      shell: bash
       run: |
         cd ${{ matrix.version }}
         ${{ matrix.gradle_cmd }} build --no-daemon
     
-    - name: Build 1.18.2 mod
-      if: matrix.version == '1.18.2'
-      shell: ${{ matrix.gradle_shell }}
+    - name: Build 1.18.2 mod (Linux/macOS)
+      if: matrix.version == '1.18.2' && matrix.platform != 'windows'
+      shell: bash
+      run: |
+        cd ${{ matrix.version }}/${{ matrix.mod_type }}
+        ${{ matrix.gradle_cmd }} build --no-daemon
+    
+    - name: Build 1.18.2 mod (Windows)
+      if: matrix.version == '1.18.2' && matrix.platform == 'windows'
+      shell: cmd
       run: |
         cd ${{ matrix.version }}/${{ matrix.mod_type }}
         ${{ matrix.gradle_cmd }} build --no-daemon
