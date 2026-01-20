@@ -134,8 +134,8 @@ void initialize(
 	CILog("CocoaInput Windows Clang Initializer start. library compiled at  %s %s",__DATE__,__TIME__);
 	setCallback(c_draw,c_done,c_rect);
 	hwnd=(HWND)hwndp;
-	glfwWndProc = GetWindowLongPtr(hwnd,GWLP_WNDPROC);
-	SetWindowLongPtr(hwnd,GWLP_WNDPROC,wrapper_wndProc);
+	glfwWndProc = (WNDPROC) GetWindowLongPtr(hwnd,GWLP_WNDPROC);
+	SetWindowLongPtr(hwnd,GWLP_WNDPROC,(LONG_PTR)wrapper_wndProc);
 	CILog("Window procedure replaced");
 	//input_himc = ImmGetContext(hwnd);
 	/*if(!hImc){
