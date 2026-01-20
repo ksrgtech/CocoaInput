@@ -88,7 +88,17 @@ jobs:
             native_deps: ''
             gradle_cmd: ./gradlew
             mod_type: fabric
-            
+
+          - version: "1.18.2"
+            os: macos-15-intel
+            platform: macos
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_mac.sh
+            native_deps: ''
+            gradle_cmd: ./gradlew
+            mod_type: fabric
+
           - version: "1.18.2"
             os: windows-2022
             platform: windows
