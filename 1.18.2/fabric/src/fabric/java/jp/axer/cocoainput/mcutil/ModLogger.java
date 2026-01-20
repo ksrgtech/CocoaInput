@@ -1,6 +1,6 @@
-package jp.axer.cocoainput.util;
+package jp.axer.cocoainput.mcutil;
 
-import jp.axer.cocoainput.domain;
+import jp.axer.cocoainput.domain.SimpleLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 

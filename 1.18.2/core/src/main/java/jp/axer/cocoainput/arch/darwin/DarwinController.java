@@ -3,11 +3,10 @@ package jp.axer.cocoainput.arch.darwin;
 import java.lang.reflect.Field;
 
 import jp.axer.cocoainput.CocoaInput;
-import jp.axer.cocoainput.arch.WrapperChecker;
+import jp.axer.cocoainput.domain.*;
 import jp.axer.cocoainput.plugin.CocoaInputController;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import jp.axer.cocoainput.domain.*;
 
 public class DarwinController implements CocoaInputController {
     private SimpleLogger logger;

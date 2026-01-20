@@ -1,4 +1,4 @@
-package jp.axer.cocoainput.arch;
+package jp.axer.cocoainput.domain;
 
 public interface WrapperChecker {
     public boolean isAlreadyInitialized();

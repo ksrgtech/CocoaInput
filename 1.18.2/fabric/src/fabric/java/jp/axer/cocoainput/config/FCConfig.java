@@ -1,6 +1,6 @@
-package jp.axer.cocoainput.util;
+package jp.axer.cocoainput.config;
 
-import jp.axer.cocoainput.util.ConfigPack;
+import jp.axer.cocoainput.config.ConfigPack;
 
 public class FCConfig extends TinyConfig implements ConfigPack{
 

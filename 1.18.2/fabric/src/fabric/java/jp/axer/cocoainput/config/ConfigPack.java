@@ -1,4 +1,4 @@
-package jp.axer.cocoainput.util;
+package jp.axer.cocoainput.config;
 
 public interface ConfigPack {
 

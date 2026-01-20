@@ -33,10 +33,10 @@ public class CocoaInput {
 			} else if (Platform.isWindows()) {
 				CocoaInput.applyController(new WinController(w, n, s));
 			} else if (Platform.isX11()) {
-				CocoaInput.applyController(new X11Controller(n, w));
+				CocoaInput.applyController(new X11Controller(w, n));
 			} else {
 				logger.log("CocoaInput cannot find appropriate Controller in running OS.");
-				CocoaInput.applyController(new DummyController(n, logger));
+				CocoaInput.applyController(new DummyController(logger));
 			}
 			logger.log("CocoaInput has been initialized.");
 		} catch (Exception e) {

@@ -56,7 +56,7 @@ public class DarwinIMEOperator implements IMEOperator {
                 } else {
                     buff = new float[]{point.getX(), point.getY(), point.getWidth(), point.getHeight()};
                 }
-                double factor = scaler.getScreenScaledFactor();
+                double factor = scaler.getFactor();
                 buff[0] *= factor;
                 buff[1] *= factor;
                 buff[2] *= factor;

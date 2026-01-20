@@ -16,13 +16,19 @@ import jp.axer.cocoainput.arch.darwin.DarwinController;
 import jp.axer.cocoainput.arch.dummy.DummyController;
 import jp.axer.cocoainput.arch.win.WinController;
 import jp.axer.cocoainput.arch.x11.X11Controller;
+import jp.axer.cocoainput.domain.*;
 import jp.axer.cocoainput.plugin.CocoaInputController;
-import jp.axer.cocoainput.util.ConfigPack;
-import jp.axer.cocoainput.util.logger;
+import jp.axer.cocoainput.config.ConfigPack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 public class LibraryCopyImpl implements NativeLibraryLoader {
+    private SimpleLogger logger;
+
+    public LibraryCopyImpl(SimpleLogger logger) {
+        this.logger = logger;
+    }
+
     public void copyLibrary(String libraryName, String libraryPath) throws IOException {
         InputStream libFile;
         if (zipsource == null) {//Fabric case

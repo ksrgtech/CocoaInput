@@ -3,7 +3,7 @@ package jp.axer.cocoainput.loader;
 
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import jp.axer.cocoainput.util.FCConfig;
+import jp.axer.cocoainput.config.FCConfig;
 
 public class CocoaInputModMenu implements ModMenuApi {
 

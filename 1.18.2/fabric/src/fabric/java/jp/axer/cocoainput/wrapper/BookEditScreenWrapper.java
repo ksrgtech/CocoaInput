@@ -6,9 +6,9 @@ import java.util.Optional;
 import jp.axer.cocoainput.CocoaInput;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import jp.axer.cocoainput.util.ModLogger;
-import jp.axer.cocoainput.util.Rect;
-import jp.axer.cocoainput.util.WrapperUtil;
+import jp.axer.cocoainput.domain.SimpleLogger;
+import jp.axer.cocoainput.domain.Rect;
+import jp.axer.cocoainput.mcutil.WrapperUtil;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
 import net.minecraft.client.StringSplitter;
@@ -19,8 +19,8 @@ public class BookEditScreenWrapper extends IMEReceiver {
     private IMEOperator myIME;
     private BookEditScreen owner;
 
-    public BookEditScreenWrapper(BookEditScreen field) {
-        ModLogger.log("BookEditScreen init: " + field.hashCode());
+    public BookEditScreenWrapper(BookEditScreen field, SimpleLogger logger) {
+        logger.log("BookEditScreen init: " + field.hashCode());
         owner = field;
         myIME = CocoaInput.getController().generateIMEOperator(this);
         myIME.setFocused(true);

@@ -11,13 +11,10 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 
 import jp.axer.cocoainput.CocoaInput;
-import jp.axer.cocoainput.arch.WrapperChecker;
 import jp.axer.cocoainput.domain.*;
 import jp.axer.cocoainput.plugin.CocoaInputController;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-// import net.minecraft.client.Minecraft;
-// import net.minecraft.client.Minecraft;
 
 public class X11Controller implements CocoaInputController {
 

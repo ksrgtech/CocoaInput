@@ -3,7 +3,6 @@ package jp.axer.cocoainput.plugin;
 import jp.axer.cocoainput.CocoaInput;
 import jp.axer.cocoainput.arch.win.Logger;
 import jp.axer.cocoainput.domain.*;
-// import net.minecraft.client.Minecraft;
 
 public abstract class IMEReceiver {
 
@@ -66,7 +65,8 @@ public abstract class IMEReceiver {
 		int caretPosition;
 		boolean hasCaret;
 		String commitString;
-		if (CocoaInput.config.isAdvancedPreeditDraw()) {
+        // TODO(kisaragi): config
+		if (true) {
 			Tuple3<String, Integer, Boolean> formattedText = PreeditFormatter.formatMarkedText(aString, position1,
 					length1);
 			commitString = formattedText._1();
@@ -109,14 +109,8 @@ public abstract class IMEReceiver {
 
 	abstract protected void setSelectionPos(int p);
 
-	protected void insertTextNative(String text) {
+	protected void insertTextNative(String text, NativeTextInserter nativeTextInserter) {
         nativeTextInserter.enqueueMany(text);
-		/*
-        for (char c : text.toCharArray()) {
-			Minecraft instance = Minecraft.getInstance();
-			instance.keyboardHandler.charTyped(instance.getWindow().getWindow(), c, 0);
-		}
-        */
 	}
 
 	protected void insertTextEmurated(String aString) {

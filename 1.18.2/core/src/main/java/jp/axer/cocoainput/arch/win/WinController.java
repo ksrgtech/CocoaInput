@@ -6,7 +6,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 
 import jp.axer.cocoainput.CocoaInput;
-import jp.axer.cocoainput.arch.WrapperChecker;
 import jp.axer.cocoainput.arch.win.Handle.DoneCallback;
 import jp.axer.cocoainput.arch.win.Handle.PreeditCallback;
 import jp.axer.cocoainput.arch.win.Handle.RectCallback;
@@ -14,7 +13,6 @@ import jp.axer.cocoainput.domain.*;
 import jp.axer.cocoainput.plugin.CocoaInputController;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import net.minecraft.client.Minecraft;
 
 public class WinController implements CocoaInputController {
 
@@ -51,7 +49,7 @@ public class WinController implements CocoaInputController {
                 } else {
                     buff = new float[]{point.getX(), point.getY(), point.getWidth(), point.getHeight()};
                 }
-                double factor = scaler.getScreenScaledFactor();
+                double factor = scaler.getFactor();
                 buff[0] *= factor;
                 buff[1] *= factor;
                 buff[2] *= factor;

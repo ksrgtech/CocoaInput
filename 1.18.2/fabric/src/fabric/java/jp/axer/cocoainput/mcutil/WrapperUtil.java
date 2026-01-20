@@ -1,4 +1,4 @@
-package jp.axer.cocoainput.util;
+package jp.axer.cocoainput.mcutil;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;

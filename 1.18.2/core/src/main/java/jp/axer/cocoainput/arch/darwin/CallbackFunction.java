@@ -33,7 +33,8 @@ public class CallbackFunction {
     };
     public static Callback Func_debug = new Callback() {
         public void invoke(String msg) {
-            if (SimpleLogger.debugMode) {
+            // TODO(kisaragi): make switchable?
+            if (true) {
                 LogManager.getLogger("CocoaInput:ObjC").log(Level.DEBUG, msg);
             }
         }
