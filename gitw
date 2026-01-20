@@ -1,0 +1,16 @@
+#!/bin/sh
+
+die() {
+  echo "$@" >&2
+  exit 1
+}
+
+if command -v git >/dev/null 2>&1 ; then
+  c="git"
+elif command -v git.exe  >/dev/null 2>&1 ; then
+  c="git.exe"
+else
+  die "Requires git to be installed"
+fi
+
+"$c" "$@"

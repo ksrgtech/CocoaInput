@@ -11,7 +11,7 @@ fi
 
 # shellcheck disable=SC2034
 # shellcheck disable=SC2155
-export GIT_ROOT="$(git rev-parse --show-toplevel)"
+export GIT_ROOT="$("$(dirname "$0")/gitw" rev-parse --show-toplevel)"
 if [ -z "$GIT_ROOT" ]; then
   die "Requires git to be installed"
 fi
