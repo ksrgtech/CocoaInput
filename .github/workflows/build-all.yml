@@ -82,7 +82,10 @@ jobs:
             native_deps: ''
             gradle_cmd: gradlew.bat
             mod_type: fabric
-    
+
+    env:
+      VERSION: ${{ matrix.version }}
+
     steps:
     - uses: actions/checkout@v4
     
