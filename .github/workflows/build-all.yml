@@ -21,8 +21,8 @@ jobs:
           - version: "1.12.2"
             os: macos-14
             platform: macos
-            # temurin does not provide JDK 8 series
-            java_distribution: 'adopt'
+            # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
+            java_distribution: 'corretto'
             java_version: '8'
             build_script: build_lib_for_mac.sh
             gradle_cmd: ./gradlew
