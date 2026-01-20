@@ -1,6 +1,7 @@
 package jp.axer.cocoainput.domain;
 
 public class PreeditFormatter {
+    // TODO(kisaragi): remove this constant
     public static final char SECTION = 167; // avoid shift-jis bug...
 
     public static Tuple3<String, Integer, Boolean> formatMarkedText(String aString, int position1, int length1) {//ユーティリティ
@@ -14,6 +15,6 @@ public class PreeditFormatter {
         }
         builder.insert(0, SECTION+"r"+SECTION+"n");//最初に下線修飾をセット
         builder.append(SECTION+"r");//最後に修飾をリセット
-        return new Tuple3(new String(builder), position1, hasCaret);
+        return new Tuple3<>(new String(builder), position1, hasCaret);
     }
 }
