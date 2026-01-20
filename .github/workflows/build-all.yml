@@ -107,9 +107,11 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         update: true
+        # msys2 has own PATH on its own
         install: >-
           mingw-w64-x86_64-toolchain
           make
+          git
     
     - name: Build native library (Windows)
       if: matrix.platform == 'windows'
