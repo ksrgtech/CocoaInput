@@ -95,9 +95,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: 'Debug: inspect whole repository'
-      run: find . -type f
     
     - name: Set up JDK ${{ matrix.java_version }}
       uses: actions/setup-java@v5.1.0
@@ -138,7 +135,6 @@ jobs:
       shell: bash
       run: |
         cd ${{ matrix.version }}
-        ls ..
         ${{ matrix.gradle_cmd }} build --no-daemon
     
     - name: Build 1.18.2 mod (Linux/macOS/Windows)
