@@ -21,6 +21,8 @@ jobs:
           - version: "1.12.2"
             os: macos-14
             platform: macos
+            # temurin does not provide JDK 8 series
+            java_distribution: 'adopt'
             java_version: '8'
             build_script: build_lib_for_mac.sh
             gradle_cmd: ./gradlew
@@ -30,6 +32,7 @@ jobs:
           - version: "1.18.2"
             os: ubuntu-22.04
             platform: linux
+            java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_x11.sh
             native_deps: build-essential libx11-dev libxtst-dev
@@ -39,6 +42,7 @@ jobs:
           - version: "1.18.2"
             os: macos-14
             platform: macos
+            java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_mac.sh
             native_deps: ''
@@ -48,6 +52,7 @@ jobs:
           - version: "1.18.2"
             os: windows-2022
             platform: windows
+            java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_win.sh
             native_deps: ''
@@ -58,6 +63,7 @@ jobs:
           - version: "1.18.2"
             os: ubuntu-22.04
             platform: linux
+            java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_x11.sh
             native_deps: build-essential libx11-dev libxtst-dev
@@ -67,6 +73,7 @@ jobs:
           - version: "1.18.2"
             os: macos-14
             platform: macos
+            java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_mac.sh
             native_deps: ''
@@ -76,6 +83,7 @@ jobs:
           - version: "1.18.2"
             os: windows-2022
             platform: windows
+            java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_win.sh
             native_deps: ''
@@ -91,7 +99,7 @@ jobs:
     - name: Set up JDK ${{ matrix.java_version }}
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
+        distribution: ${{ matrix.java_distribution }}
         java-version: ${{ matrix.java_version }}
         cache: 'gradle'
     
