@@ -1,4 +1,4 @@
-CC	= gcc.exe
+CC	= gcc
 CFLAGS	= -Wall -fPIC
 FFLAGS	= 
 OBJS	= libwincocoainput.o logger.o

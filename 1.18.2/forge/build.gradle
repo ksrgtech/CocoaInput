@@ -109,6 +109,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
+    implementation project(':core')
 }
 
 

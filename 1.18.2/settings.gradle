@@ -1,0 +1,5 @@
+rootProject.name = 'your-mod'
+
+include 'core'
+include 'forge'
+include 'fabric'

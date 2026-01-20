@@ -1,28 +1,9 @@
-/*
-
 .DS_Store
 *.dylib
 *.so
 *.dll
 *.o
 
-
-!.gitignore
-!.github
-!src
-!libcocoainput
-!README.MD
-!build_lib_for_mac.sh
-!build_lib_for_win.sh
-!build_lib_for_x11.sh
-!build_lib_all.sh
-!build_cocoainput_all_platform.sh
-!TODO.txt
-!LICENSE
-
 libcocoainput/build
 
-!fabric
-!forge
-!1.12.2
-!1.18.2
+.gradle

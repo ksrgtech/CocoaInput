@@ -35,7 +35,7 @@
     "another-mod": "*"
   },
   "accessWidener":"cocoainput.accesswidener",
-"mixins": [
+  "mixins": [
     "cocoainput.mixins.json",
     "cocoafab.mixins.json"
   ]
