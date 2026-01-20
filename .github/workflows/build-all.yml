@@ -19,6 +19,24 @@ jobs:
         include:
           # 1.12.2 Forge builds
           - version: "1.12.2"
+            os: macos-15-intel
+            platform: macos
+            # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
+            java_distribution: 'corretto'
+            java_version: '8'
+            build_script: build_lib_for_mac.sh
+            gradle_cmd: ./gradlew
+            mod_type: forge
+          - version: "1.12.2"
+            os: macos-15
+            platform: macos
+            # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
+            java_distribution: 'corretto'
+            java_version: '8'
+            build_script: build_lib_for_mac.sh
+            gradle_cmd: ./gradlew
+            mod_type: forge
+          - version: "1.12.2"
             os: macos-14
             platform: macos
             # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
@@ -27,7 +45,7 @@ jobs:
             build_script: build_lib_for_mac.sh
             gradle_cmd: ./gradlew
             mod_type: forge
-            
+
           # 1.18.2 Forge builds
           - version: "1.18.2"
             os: ubuntu-22.04
