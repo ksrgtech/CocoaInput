@@ -8,8 +8,7 @@ import jp.axer.cocoainput.arch.darwin.CallbackFunction.Func_insertText;
 import jp.axer.cocoainput.arch.darwin.CallbackFunction.Func_setMarkedText;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import jp.axer.cocoainput.util.ModLogger;
-import jp.axer.cocoainput.util.Rect;
+import jp.axer.cocoainput.domain.*;
 
 import java.util.UUID;
 
@@ -19,15 +18,19 @@ public class DarwinIMEOperator implements IMEOperator {
     Func_insertText insertText_p;
     Func_setMarkedText setMarkedText_p;
     Func_firstRectForCharacterRange firstRectForCharacterRange_p;
+    SimpleLogger logger;
+    ScreenScaleFactorGetter scaler;
     boolean isFocused = false;
 
-    public DarwinIMEOperator(IMEReceiver field) {
+    public DarwinIMEOperator(IMEReceiver field, SimpleLogger logger, ScreenScaleFactorGetter scaler) {
         this.owner = field;
+        this.logger = logger;
+        this.scaler = scaler;
         uuid = UUID.randomUUID().toString();
         insertText_p = new Func_insertText() {
             @Override
             public void invoke(String str, int position, int length) {
-                ModLogger.debug("Textfield " + uuid + " received inserted text.");
+                logger.debug("Textfield " + uuid + " received inserted text.");
                 owner.insertText(str, position, length);
             }
         };
@@ -35,7 +38,7 @@ public class DarwinIMEOperator implements IMEOperator {
             @Override
             public void invoke(String str, int position1, int length1,
                                int position2, int length2) {
-                ModLogger.debug("MarkedText changed at " + uuid + ".");
+                logger.debug("MarkedText changed at " + uuid + ".");
                 owner.setMarkedText(str, position1, length1, position2, length2);
                 ;
             }
@@ -45,7 +48,7 @@ public class DarwinIMEOperator implements IMEOperator {
 
             @Override
             public Pointer invoke() {
-                ModLogger.debug("Called to determine where to draw.");
+                logger.debug("Called to determine where to draw.");
                 Rect point = owner.getRect();
                 float[] buff;
                 if (point == null) {
@@ -53,7 +56,7 @@ public class DarwinIMEOperator implements IMEOperator {
                 } else {
                     buff = new float[]{point.getX(), point.getY(), point.getWidth(), point.getHeight()};
                 }
-                double factor = CocoaInput.getScreenScaledFactor();
+                double factor = scaler.getScreenScaledFactor();
                 buff[0] *= factor;
                 buff[1] *= factor;
                 buff[2] *= factor;
@@ -65,7 +68,7 @@ public class DarwinIMEOperator implements IMEOperator {
             }
 
         };
-        ModLogger.log("IMEOperator addInstance: " + uuid);
+        logger.log("IMEOperator addInstance: " + uuid);
         Handle.INSTANCE.addInstance(uuid, insertText_p, setMarkedText_p, firstRectForCharacterRange_p);
     }
 
@@ -79,7 +82,7 @@ public class DarwinIMEOperator implements IMEOperator {
 
     public void setFocused(boolean yn) {
         if (yn != isFocused) {
-            ModLogger.log("IMEOperator.setFocused: " + (yn ? "true" : "false"));
+            logger.log("IMEOperator.setFocused: " + (yn ? "true" : "false"));
             Handle.INSTANCE.setIfReceiveEvent(uuid, yn ? 1 : 0);
             isFocused = yn;
         }

@@ -2,10 +2,8 @@ package jp.axer.cocoainput.plugin;
 
 import jp.axer.cocoainput.CocoaInput;
 import jp.axer.cocoainput.arch.win.Logger;
-import jp.axer.cocoainput.util.PreeditFormatter;
-import jp.axer.cocoainput.util.Rect;
-import jp.axer.cocoainput.util.Tuple3;
-import net.minecraft.client.Minecraft;
+import jp.axer.cocoainput.domain.*;
+// import net.minecraft.client.Minecraft;
 
 public abstract class IMEReceiver {
 
@@ -32,11 +30,14 @@ public abstract class IMEReceiver {
 		length = 0;
 		this.setCursorPos(originalCursorPosition);
 		this.setSelectionPos(originalCursorPosition);
+        // TODO(kisaragi): 後で考える
+        /*
 		if (CocoaInput.config.isNativeCharTyped()) {
 			this.insertTextNative(aString);
 		} else {
+        */
 			this.insertTextEmurated(aString);
-		}
+		// }
 		/*
 		if (aString.length() == 0) {
 			this.setText((new StringBuffer(this.getText()))
@@ -109,10 +110,13 @@ public abstract class IMEReceiver {
 	abstract protected void setSelectionPos(int p);
 
 	protected void insertTextNative(String text) {
-		for (char c : text.toCharArray()) {
+        nativeTextInserter.enqueueMany(text);
+		/*
+        for (char c : text.toCharArray()) {
 			Minecraft instance = Minecraft.getInstance();
 			instance.keyboardHandler.charTyped(instance.getWindow().getWindow(), c, 0);
 		}
+        */
 	}
 
 	protected void insertTextEmurated(String aString) {

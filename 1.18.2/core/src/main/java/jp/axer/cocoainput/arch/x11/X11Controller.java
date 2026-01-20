@@ -11,11 +11,13 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 
 import jp.axer.cocoainput.CocoaInput;
+import jp.axer.cocoainput.arch.WrapperChecker;
+import jp.axer.cocoainput.domain.*;
 import jp.axer.cocoainput.plugin.CocoaInputController;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+// import net.minecraft.client.Minecraft;
+// import net.minecraft.client.Minecraft;
 
 public class X11Controller implements CocoaInputController {
 
@@ -52,6 +54,8 @@ public class X11Controller implements CocoaInputController {
 	};
 
 	public static void setupKeyboardEvent() {
+        // TODO(kisaragi): あとで直す
+        /*
 		Minecraft.getInstance().keyboardHandler.setup(window);
 		GLFW.glfwSetCharModsCallback(window, (p_228000_1_, p_228000_3_, p_228000_4_) -> {
 			Minecraft.getInstance().execute(() -> {
@@ -65,16 +69,17 @@ public class X11Controller implements CocoaInputController {
 				}
 			});
 		});
+        */
 	}
 
-	private static final long window = Minecraft.getInstance().getWindow().getWindow();
+	private final long window;
 
-	public X11Controller() throws IOException {
-
+	public X11Controller(MinecraftRawWindowIdAccessor accessor, NativeLibraryLoader loader) throws IOException {
 		setupKeyboardEvent();
 
+        window = accessor.getRawId();
 		Logger.log("This is X11 Controller");
-		CocoaInput.copyLibrary("libx11cocoainput.so", "x11/libx11cocoainput.so");
+		loader.copyFrom("libx11cocoainput.so", "x11/libx11cocoainput.so");
 		Logger.log("Call clang initializer");
 		Handle.INSTANCE.initialize(window, GLFWNativeX11.glfwGetX11Window(window), this.c_draw, this.c_done,
 				Logger.clangLog, Logger.clangError, Logger.clangDebug);
@@ -91,14 +96,18 @@ public class X11Controller implements CocoaInputController {
 	}
 
 	@Override
-	public void screenOpenNotify(Screen gui) {
+	public void screenOpenNotify(WrapperChecker checker) {
+        if (checker.isAlreadyInitialized()) {
+            return;
+        }
+        /*
 		try {
 			Field wrapper = gui.getClass().getField("wrapper");
 			wrapper.setAccessible(true);
 			if (wrapper.get(gui) instanceof IMEReceiver)
 				return;
 		} catch (Exception e) {
-			/* relax */}
+			/* relax */ //}
 		if (X11Controller.focusedOperator != null) {
 			X11Controller.focusedOperator.setFocused(false);
 			X11Controller.focusedOperator = null;

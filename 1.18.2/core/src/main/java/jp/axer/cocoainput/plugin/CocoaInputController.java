@@ -1,8 +1,9 @@
 package jp.axer.cocoainput.plugin;
 
-import net.minecraft.client.gui.screens.Screen;
+import jp.axer.cocoainput.WrapperChecker;
 
 public interface CocoaInputController {
     IMEOperator generateIMEOperator(IMEReceiver ime); //GuiTextFieldとかが作成された時に割り当てるIMEOperator生成処理を委託
-    void screenOpenNotify(Screen sc);
+    void screenOpenNotify(WrapperChecker w);
 }
+

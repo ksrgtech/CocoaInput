@@ -2,7 +2,7 @@ package jp.axer.cocoainput.arch.darwin;
 
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
-import jp.axer.cocoainput.util.ModLogger;
+import jp.axer.cocoainput.domain.SimpleLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 
@@ -33,7 +33,7 @@ public class CallbackFunction {
     };
     public static Callback Func_debug = new Callback() {
         public void invoke(String msg) {
-            if (ModLogger.debugMode) {
+            if (SimpleLogger.debugMode) {
                 LogManager.getLogger("CocoaInput:ObjC").log(Level.DEBUG, msg);
             }
         }

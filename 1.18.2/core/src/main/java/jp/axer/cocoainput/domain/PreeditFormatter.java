@@ -1,4 +1,4 @@
-package jp.axer.cocoainput.util;
+package jp.axer.cocoainput.domain;
 
 public class PreeditFormatter {
     public static final char SECTION = 167; // avoid shift-jis bug...

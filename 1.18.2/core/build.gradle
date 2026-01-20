@@ -11,7 +11,9 @@ repositories {
 
 dependencies {
     // coreで必要な依存関係のみ
-    // Mod Loader固有のものは入れない
+    implementation 'net.java.dev.jna:jna:5.13.0'
+    implementation 'net.java.dev.jna:jna-platform:5.13.0'
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.25.3'
 }
 
 java {
