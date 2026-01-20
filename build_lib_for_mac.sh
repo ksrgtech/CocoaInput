@@ -1,5 +1,18 @@
 #!/bin/bash
+die() {
+  echo "$@" >&2
+  exit 1
+}
+
 echo "Build libcocoainput for macOS"
-mkdir src/main/resources/darwin
-cd libcocoainput/darwin/libcocoainput
+if [ -z "$VERSION" ]; then
+  die "Requires version directory"
+fi
+
+# shellcheck disable=SC2034
+# shellcheck disable=SC2155
+export GIT_ROOT="$(git rev-parse --show-toplevel)"
+
+mkdir -p "$VERSION/src/main/resources/darwin"
+cd "$(dirname "$0")/libcocoainput/darwin" || exit 1
 make && make install

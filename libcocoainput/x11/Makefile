@@ -4,7 +4,7 @@ FFLAGS	= -lX11
 OBJS	= libx11cocoainput.o logger.o
 LIBS	= 
 TARGET	= libx11cocoainput.so
-DISTDIR	= ../../src/main/resources/x11/
+DISTDIR	= $(GIT_ROOT)/$(VERSION)/src/main/resources/x11/
 RM	= rm
 CP	= cp
 

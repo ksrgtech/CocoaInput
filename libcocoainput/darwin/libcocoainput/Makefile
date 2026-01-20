@@ -4,7 +4,7 @@ FFLAGS	= -framework Foundation -framework Cocoa
 OBJS	= cocoainput.o Logger.o DataManager.o MinecraftView.o
 LIBS	=
 TARGET	= libcocoainput.dylib
-DISTDIR	= ../../../src/main/resources/darwin/
+DISTDIR	= $(GIT_ROOT)/$(VERSION)/src/main/resources/darwin/
 RM	= rm
 CP	= cp
 
