@@ -20,16 +20,15 @@ jobs:
           # 1.12.2 Forge builds
           - version: "1.12.2"
             os: macos-15-intel
-            platform: macos
             # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
             java_distribution: 'corretto'
             java_version: '8'
             build_script: build_lib_for_mac.sh
             gradle_cmd: ./gradlew
             mod_type: forge
+
           - version: "1.12.2"
             os: macos-15
-            platform: macos
             # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
             java_distribution: 'corretto'
             java_version: '8'
@@ -40,7 +39,6 @@ jobs:
           # 1.18.2 Forge builds
           - version: "1.18.2"
             os: ubuntu-22.04
-            platform: linux
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_x11.sh
@@ -50,7 +48,6 @@ jobs:
             
           - version: "1.18.2"
             os: macos-15
-            platform: macos
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_mac.sh
@@ -60,7 +57,6 @@ jobs:
             
           - version: "1.18.2"
             os: windows-2022
-            platform: windows
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_win.sh
@@ -71,7 +67,6 @@ jobs:
           # 1.18.2 Fabric builds
           - version: "1.18.2"
             os: ubuntu-22.04
-            platform: linux
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_x11.sh
@@ -81,7 +76,6 @@ jobs:
             
           - version: "1.18.2"
             os: macos-15
-            platform: macos
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_mac.sh
@@ -91,7 +85,6 @@ jobs:
 
           - version: "1.18.2"
             os: macos-15-intel
-            platform: macos
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_mac.sh
@@ -101,7 +94,6 @@ jobs:
 
           - version: "1.18.2"
             os: windows-2022
-            platform: windows
             java_distribution: 'temurin'
             java_version: '17'
             build_script: build_lib_for_win.sh
@@ -114,22 +106,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
     - name: Set up JDK ${{ matrix.java_version }}
       uses: actions/setup-java@v5.1.0
       with:
         distribution: ${{ matrix.java_distribution }}
         java-version: ${{ matrix.java_version }}
         cache: 'gradle'
-    
+    - name: Detect runner's OS
+      id: os
+      run: |
+        echo "os=${{ toLower(runner.os) }}" >> $GITHUB_OUTPUT
+      shell: bash
+
     - name: Install build dependencies (Linux)
-      if: matrix.platform == 'linux'
+      if: steps.os.output.os == 'linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.native_deps }}
     
     - name: Set up MinGW (Windows)
-      if: matrix.platform == 'windows'
+      if: steps.os.output.os == 'windows'
       uses: msys2/setup-msys2@v2
       with:
         update: true
@@ -140,12 +136,12 @@ jobs:
           git
     
     - name: Build native library (Windows)
-      if: matrix.platform == 'windows'
+      if: steps.os.output.os == 'windows'
       shell: msys2 {0}
       run: ./${{ matrix.build_script }}
     
     - name: Build native library (Linux/macOS)
-      if: matrix.platform != 'windows'
+      if: steps.os.output.os != 'windows'
       shell: bash
       run: ./${{ matrix.build_script }}
 
@@ -165,16 +161,24 @@ jobs:
 
     # TODO(kisaragi): cache build artifacts
 
+    - name: Determine Runner's CPU
+      id: detect-arch
+      run: |
+        $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLowerInvariant()
+        echo "architecture=$arch" >> $env:GITHUB_OUTPUT
+        echo "Detected arch: $arch"
+      shell: pwsh
+
     - name: Upload 1.12.2 artifacts
       if: matrix.version == '1.12.2'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ matrix.platform }}
+        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ toLower(runner.os) }}-${{ steps.detect-arch.outputs.architecture }}
         path: ${{ matrix.version }}/build/libs/*.jar
     
     - name: Upload 1.18.2 artifacts
       if: matrix.version == '1.18.2'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ matrix.platform }}
+        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ toLower(runner.os) }}-${{ steps.detect-arch.outputs.architecture }}
         path: ${{ matrix.version }}/${{ matrix.mod_type }}/build/libs/*.jar
