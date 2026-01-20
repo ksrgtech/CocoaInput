@@ -114,9 +114,11 @@ jobs:
         cache: 'gradle'
     - name: Detect runner's OS
       id: os
-      run: |
-        echo "os=${{ tolower(runner.os) }}" >> $GITHUB_OUTPUT
       shell: bash
+      run: |
+        os=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
+        echo "os=$os" >> $GITHUB_OUTPUT
+        echo "detected os: $os"
 
     - name: Install build dependencies (Linux)
       if: steps.os.output.os == 'linux'
