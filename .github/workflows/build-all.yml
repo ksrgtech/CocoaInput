@@ -1,0 +1,161 @@
+name: Build All Versions
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 1.12.2 Forge builds
+          - version: "1.12.2"
+            os: macos-14
+            platform: macos
+            # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
+            java_distribution: 'corretto'
+            java_version: '8'
+            build_script: build_lib_for_mac.sh
+            gradle_cmd: ./gradlew
+            mod_type: forge
+            
+          # 1.18.2 Forge builds
+          - version: "1.18.2"
+            os: ubuntu-22.04
+            platform: linux
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_x11.sh
+            native_deps: build-essential libx11-dev libxtst-dev
+            gradle_cmd: ./gradlew
+            mod_type: forge
+            
+          - version: "1.18.2"
+            os: macos-14
+            platform: macos
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_mac.sh
+            native_deps: ''
+            gradle_cmd: ./gradlew
+            mod_type: forge
+            
+          - version: "1.18.2"
+            os: windows-2022
+            platform: windows
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_win.sh
+            native_deps: ''
+            gradle_cmd: ./gradlew
+            mod_type: forge
+            
+          # 1.18.2 Fabric builds
+          - version: "1.18.2"
+            os: ubuntu-22.04
+            platform: linux
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_x11.sh
+            native_deps: build-essential libx11-dev libxtst-dev
+            gradle_cmd: ./gradlew
+            mod_type: fabric
+            
+          - version: "1.18.2"
+            os: macos-14
+            platform: macos
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_mac.sh
+            native_deps: ''
+            gradle_cmd: ./gradlew
+            mod_type: fabric
+            
+          - version: "1.18.2"
+            os: windows-2022
+            platform: windows
+            java_distribution: 'temurin'
+            java_version: '17'
+            build_script: build_lib_for_win.sh
+            native_deps: ''
+            gradle_cmd: ./gradlew
+            mod_type: fabric
+
+    env:
+      VERSION: ${{ matrix.version }}
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK ${{ matrix.java_version }}
+      uses: actions/setup-java@v5.1.0
+      with:
+        distribution: ${{ matrix.java_distribution }}
+        java-version: ${{ matrix.java_version }}
+        cache: 'gradle'
+    
+    - name: Install build dependencies (Linux)
+      if: matrix.platform == 'linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ${{ matrix.native_deps }}
+    
+    - name: Set up MinGW (Windows)
+      if: matrix.platform == 'windows'
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        # msys2 has own PATH on its own
+        install: >-
+          mingw-w64-x86_64-toolchain
+          make
+          git
+    
+    - name: Build native library (Windows)
+      if: matrix.platform == 'windows'
+      shell: msys2 {0}
+      run: ./${{ matrix.build_script }}
+    
+    - name: Build native library (Linux/macOS)
+      if: matrix.platform != 'windows'
+      shell: bash
+      run: ./${{ matrix.build_script }}
+
+    - name: Build 1.12.2 mod
+      if: matrix.version == '1.12.2'
+      shell: bash
+      run: |
+        cd ${{ matrix.version }}
+        ${{ matrix.gradle_cmd }} build --no-daemon
+    
+    - name: Build 1.18.2 mod (Linux/macOS/Windows)
+      if: matrix.version == '1.18.2'
+      shell: bash
+      run: |
+        cd ${{ matrix.version }}/${{ matrix.mod_type }}
+        ${{ matrix.gradle_cmd }} build --no-daemon
+
+    # TODO(kisaragi): cache build artifacts
+
+    - name: Upload 1.12.2 artifacts
+      if: matrix.version == '1.12.2'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ matrix.platform }}
+        path: ${{ matrix.version }}/build/libs/*.jar
+    
+    - name: Upload 1.18.2 artifacts
+      if: matrix.version == '1.18.2'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ matrix.platform }}
+        path: ${{ matrix.version }}/${{ matrix.mod_type }}/build/libs/*.jar
