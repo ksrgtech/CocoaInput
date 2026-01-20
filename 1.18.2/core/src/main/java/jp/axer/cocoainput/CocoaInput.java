@@ -19,7 +19,8 @@ import jp.axer.cocoainput.domain.*;
 
 public class CocoaInput {
 	private static CocoaInputController controller;
-	private static String zipsource;
+    // TODO(kisaragi): この辺怪しいのでインターフェース切るべきっぽい
+	public static String zipsource;
 	// TODO(kisargi): あとで直す
     // public static ConfigPack config = ConfigPack.defaultConfig;
     private static SimpleLogger logger;

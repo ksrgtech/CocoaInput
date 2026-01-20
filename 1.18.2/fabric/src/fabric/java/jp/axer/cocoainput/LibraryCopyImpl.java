@@ -29,7 +29,7 @@ public class LibraryCopyImpl implements NativeLibraryLoader {
         this.logger = logger;
     }
 
-    public void copyLibrary(String libraryName, String libraryPath) throws IOException {
+    public void copyFrom(String libraryName, String libraryPath) throws IOException {
         InputStream libFile;
         if (zipsource == null) {//Fabric case
             libFile = CocoaInput.class.getResourceAsStream("/" + libraryPath);
