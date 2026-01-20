@@ -52,7 +52,7 @@ jobs:
             java_version: '17'
             build_script: build_lib_for_win.sh
             native_deps: ''
-            gradle_cmd: gradlew.bat
+            gradle_cmd: ./gradlew
             mod_type: forge
             
           # 1.18.2 Fabric builds
@@ -80,7 +80,7 @@ jobs:
             java_version: '17'
             build_script: build_lib_for_win.sh
             native_deps: ''
-            gradle_cmd: gradlew.bat
+            gradle_cmd: ./gradlew
             mod_type: fabric
 
     env:
