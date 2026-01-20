@@ -64,9 +64,10 @@ jar {
 }
 
 deobfCompileDummyTask.doFirst {
+    // TODO(kisaragi): this runs also on Linux which is not intended
     if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
         println 'Building libcocoainput.'
-        String cm = "./build_lib_for_mac.sh"
+        String cm = "../../build_lib_for_mac.sh"
         Process p = cm.execute()
         p.waitFor()
     }

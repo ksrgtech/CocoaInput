@@ -17,13 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # 1.12.2 builds
+          # 1.12.2 Forge builds
           - version: "1.12.2"
-            os: ubuntu-22.04
-            platform: linux
+            os: macos-14
+            platform: macos
             java_version: '8'
-            build_script: build_lib_for_x11.sh
-            native_deps: build-essential libx11-dev libxtst-dev
+            build_script: build_lib_for_mac.sh
             gradle_cmd: ./gradlew
             mod_type: forge
             
