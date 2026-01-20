@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   build:
+    name: Build for ${{ matrix.version }} (${{ matrix.mod_type }}) on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     
     strategy:
@@ -175,12 +176,12 @@ jobs:
       if: matrix.version == '1.12.2'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ steps.os.output.os }}-${{ steps.detect-arch.outputs.architecture }}
+        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ steps.os.outputs.os }}-${{ steps.detect-arch.outputs.architecture }}
         path: ${{ matrix.version }}/build/libs/*.jar
     
     - name: Upload 1.18.2 artifacts
       if: matrix.version == '1.18.2'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ steps.os.output.os }}-${{ steps.detect-arch.outputs.architecture }}
+        name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ steps.os.outputs.os }}-${{ steps.detect-arch.outputs.architecture }}
         path: ${{ matrix.version }}/${{ matrix.mod_type }}/build/libs/*.jar
