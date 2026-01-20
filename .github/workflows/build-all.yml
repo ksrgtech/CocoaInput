@@ -119,16 +119,8 @@ jobs:
     - name: Build native library (Linux/macOS)
       if: matrix.platform != 'windows'
       shell: bash
-      run: chmod +x ${{ matrix.build_script }} && ./${{ matrix.build_script }}
-    
-    - name: Set executable permissions for gradlew (Linux/macOS, 1.12.2)
-      if: matrix.platform != 'windows' && matrix.version == '1.12.2'
-      run: chmod +x ${{ matrix.version }}/gradlew
-    
-    - name: Set executable permissions for gradlew (Linux/macOS, 1.18.2)
-      if: matrix.platform != 'windows' && matrix.version == '1.18.2'
-      run: chmod +x ${{ matrix.version }}/${{ matrix.mod_type }}/gradlew
-    
+      run: ./${{ matrix.build_script }}
+
     - name: Build 1.12.2 mod
       if: matrix.version == '1.12.2'
       shell: bash
@@ -149,7 +141,9 @@ jobs:
       run: |
         cd ${{ matrix.version }}/${{ matrix.mod_type }}
         ${{ matrix.gradle_cmd }} build --no-daemon
-    
+
+    # TODO(kisaragi): cache build artifacts
+
     - name: Upload 1.12.2 artifacts
       if: matrix.version == '1.12.2'
       uses: actions/upload-artifact@v4
