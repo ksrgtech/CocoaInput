@@ -11,8 +11,9 @@ repositories {
 
 dependencies {
     // coreで必要な依存関係のみ
-    implementation 'net.java.dev.jna:jna:5.13.0'
-    implementation 'net.java.dev.jna:jna-platform:5.13.0'
+    compileOnly 'net.java.dev.jna:jna:5.13.0'
+    compileOnly 'net.java.dev.jna:jna-platform:5.13.0'
+    compileOnly 'commons-io:commons-io:2.11.0'
     compileOnly 'org.apache.logging.log4j:log4j-core:2.25.3'
     // TODO(kisaragi): 妥協しているがバージョンが違うと容易にスライドするのでMinecraft側ソースに責務を押し付けるべき
     compileOnly 'org.lwjgl:lwjgl-glfw:3.2.3'

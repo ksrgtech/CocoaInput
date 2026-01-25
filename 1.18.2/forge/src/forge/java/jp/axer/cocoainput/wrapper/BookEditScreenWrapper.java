@@ -1,27 +1,26 @@
 package jp.axer.cocoainput.wrapper;
 
-import java.util.List;
-import java.util.Optional;
-
 import jp.axer.cocoainput.CocoaInput;
-import jp.axer.cocoainput.loader.FabricLoader;
+import jp.axer.cocoainput.domain.Rect;
+import jp.axer.cocoainput.loader.ForgeLoader;
+import jp.axer.cocoainput.mcutil.WrapperUtil;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import jp.axer.cocoainput.domain.SimpleLogger;
-import jp.axer.cocoainput.domain.Rect;
-import jp.axer.cocoainput.mcutil.WrapperUtil;
+import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.BookEditScreen;
-import net.minecraft.client.StringSplitter;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+
+import java.util.List;
+import java.util.Optional;
 
 public class BookEditScreenWrapper extends IMEReceiver {
     private IMEOperator myIME;
     private BookEditScreen owner;
 
     public BookEditScreenWrapper(BookEditScreen field) {
-        FabricLoader.getLoggerInstance().log("BookEditScreen init: " + field.hashCode());
+        ForgeLoader.getLoggerInstance().log("BookEditScreen init: " + field.hashCode());
         owner = field;
         myIME = CocoaInput.getController().generateIMEOperator(this);
         myIME.setFocused(true);
@@ -96,12 +95,9 @@ public class BookEditScreenWrapper extends IMEReceiver {
             StringSplitter manager = fontRendererObj.getSplitter();
             List<FormattedText> lines = manager.splitLines(owner.getCurrentPageText(), 116, Style.EMPTY);
             final String[] lastLine = new String[1];
-            FormattedText.ContentConsumer acceptor = new FormattedText.ContentConsumer() {
-                @Override
-                public Optional accept(String p_accept_1_) {
-                    lastLine[0] = p_accept_1_;
-                    return Optional.empty();
-                }
+            FormattedText.ContentConsumer<String> acceptor = p_accept_1_ -> {
+                lastLine[0] = p_accept_1_;
+                return Optional.empty();
             };
             lines.get(lines.size() - 1).visit(acceptor);
             return new Rect(

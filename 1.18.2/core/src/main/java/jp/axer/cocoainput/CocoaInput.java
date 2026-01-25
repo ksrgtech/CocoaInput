@@ -19,15 +19,12 @@ import jp.axer.cocoainput.domain.*;
 
 public class CocoaInput {
 	private static CocoaInputController controller;
-    // TODO(kisaragi): この辺怪しいのでインターフェース切るべきっぽい
-	public static String zipsource;
 	// TODO(kisargi): あとで直す
     // public static ConfigPack config = ConfigPack.defaultConfig;
     private static SimpleLogger logger;
 	
-	public CocoaInput(String loader, String zipfile, SimpleLogger logger, MinecraftRawWindowIdAccessor w, NativeLibraryLoader n, ScreenScaleFactorGetter s) {
+	public CocoaInput(String loader, SimpleLogger logger, MinecraftRawWindowIdAccessor w, NativeLibraryLoader n, ScreenScaleFactorGetter s) {
 		logger.log("Modloader:" + loader);
-		CocoaInput.zipsource = zipfile;
 		try {
 			if (Platform.isMac()) {
 				CocoaInput.applyController(new DarwinController(n, logger, s));

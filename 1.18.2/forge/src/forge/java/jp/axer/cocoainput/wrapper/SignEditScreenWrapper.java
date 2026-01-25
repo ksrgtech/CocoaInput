@@ -1,15 +1,15 @@
 package jp.axer.cocoainput.wrapper;
 
 import jp.axer.cocoainput.CocoaInput;
-import jp.axer.cocoainput.loader.FabricLoader;
+import jp.axer.cocoainput.domain.Rect;
+import jp.axer.cocoainput.loader.ForgeLoader;
+import jp.axer.cocoainput.mcutil.WrapperUtil;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import jp.axer.cocoainput.domain.Rect;
-import jp.axer.cocoainput.mcutil.WrapperUtil;
-import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.block.StandingSignBlock;
 
 public class SignEditScreenWrapper extends IMEReceiver {
     private SignEditScreen owner;
@@ -17,7 +17,7 @@ public class SignEditScreenWrapper extends IMEReceiver {
 
 
     public SignEditScreenWrapper(SignEditScreen field) {
-        FabricLoader.getLoggerInstance().log("BookEditScreen init: " + field.hashCode());
+        ForgeLoader.getLoggerInstance().log("BookEditScreen init: " + field.hashCode());
         owner = field;
         myIME = CocoaInput.getController().generateIMEOperator(this);
         myIME.setFocused(true);

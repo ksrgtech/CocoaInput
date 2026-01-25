@@ -2,10 +2,10 @@
 package jp.axer.cocoainput.wrapper;
 
 import jp.axer.cocoainput.CocoaInput;
-import jp.axer.cocoainput.loader.FabricLoader;
+import jp.axer.cocoainput.domain.Rect;
+import jp.axer.cocoainput.loader.ForgeLoader;
 import jp.axer.cocoainput.plugin.IMEOperator;
 import jp.axer.cocoainput.plugin.IMEReceiver;
-import jp.axer.cocoainput.domain.Rect;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TextComponent;
 
@@ -14,7 +14,7 @@ public class EditBoxWrapper extends IMEReceiver {
     private EditBox owner;
 
     public EditBoxWrapper(EditBox field) {
-        FabricLoader.getLoggerInstance().log("BookEditScreen init: " + field.hashCode());
+        ForgeLoader.getLoggerInstance().log("BookEditScreen init: " + field.hashCode());
         owner = field;
         myIME = CocoaInput.getController().generateIMEOperator(this);
     }

@@ -1,4 +1,4 @@
-package jp.axer.cocoainput;
+package jp.axer.cocoainput.domain;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,25 +8,20 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import jp.axer.cocoainput.CocoaInput;
 import org.apache.commons.io.IOUtils;
 
-import com.sun.jna.Platform;
-
-import jp.axer.cocoainput.arch.darwin.DarwinController;
-import jp.axer.cocoainput.arch.dummy.DummyController;
-import jp.axer.cocoainput.arch.win.WinController;
-import jp.axer.cocoainput.arch.x11.X11Controller;
 import jp.axer.cocoainput.domain.*;
-import jp.axer.cocoainput.plugin.CocoaInputController;
-import jp.axer.cocoainput.config.ConfigPack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 
 public class LibraryCopyImpl implements NativeLibraryLoader {
     private SimpleLogger logger;
+    private String zipsource;
+    private final MinecraftNativeFolderAccessor minecraftNativeFolderAccessor;
 
-    public LibraryCopyImpl(SimpleLogger logger) {
+    public LibraryCopyImpl(SimpleLogger logger, String zipsource, MinecraftNativeFolderAccessor minecraftNativeFolderAccessor) {
         this.logger = logger;
+        this.zipsource = zipsource;
+        this.minecraftNativeFolderAccessor = minecraftNativeFolderAccessor;
     }
 
     public void copyFrom(String libraryName, String libraryPath) throws IOException {
@@ -35,16 +30,16 @@ public class LibraryCopyImpl implements NativeLibraryLoader {
             libFile = CocoaInput.class.getResourceAsStream("/" + libraryPath);
         } else {
             try {//Modファイルを検出し、jar内からライブラリを取り出す
-                ZipFile jarfile = new ZipFile(CocoaInput.zipsource);
+                ZipFile jarfile = new ZipFile(zipsource);
                 libFile = jarfile.getInputStream(new ZipEntry(libraryPath));
             } catch (FileNotFoundException e) {//存在しない場合はデバッグモードであるのでクラスパスからライブラリを取り出す
                 logger.log("Couldn't get library path. Is this debug mode?'");
                 libFile = ClassLoader.getSystemResourceAsStream(libraryPath);
             }
         }
-        File nativeDir = new File(Minecraft.getInstance().gameDirectory.getAbsolutePath().concat("/native"));
+        File nativeDir = new File(minecraftNativeFolderAccessor.getRoot().concat("/native"));
         File copyLibFile = new File(
-                Minecraft.getInstance().gameDirectory.getAbsolutePath().concat("/native/" + libraryName));
+                minecraftNativeFolderAccessor.getRoot().concat("/native/" + libraryName));
         try {
             nativeDir.mkdir();
             FileOutputStream fos = new FileOutputStream(copyLibFile);

@@ -1,4 +1,14 @@
-package jp.axer.cocoainput.config;
+package jp.axer.cocoainput.config.forge;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -8,33 +18,18 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-
-public class TinyConfig {
+public class ForgeConfigImpl {
 
     private static final Pattern INTEGER_ONLY = Pattern.compile("(-?[0-9]*)");
     private static final Pattern DECIMAL_ONLY = Pattern.compile("-?([\\d]+\\.?[\\d]*|[\\d]*\\.?[\\d]+|\\.)");
 
-    private static final List<EntryInfo> entries = new ArrayList<>();
+    final List<EntryInfo> entries = new ArrayList<>();
 
     protected static class EntryInfo {
         Field field;
@@ -49,9 +44,9 @@ public class TinyConfig {
         boolean inLimits = true;
     }
 
-    private static Class configClass;
-    private static String translationPrefix;
-    private static Path path;
+    private final Class<?> configClass;
+    private final String translationPrefix;
+    private final Path path;
 
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithModifiers(Modifier.TRANSIENT)
@@ -59,10 +54,10 @@ public class TinyConfig {
             .setPrettyPrinting()
             .create();
 
-    public static void init(String modid,Path apath, Class<?> config) {
+    public ForgeConfigImpl(String modid, Path apath, Class<?> config) {
         translationPrefix = modid + ".tinyconfig.";
         configClass = config;
-        path=apath;
+        path = apath;
 
         for (Field field : config.getFields()) {
             Entry e;
@@ -121,7 +116,7 @@ public class TinyConfig {
 
     }
 
-    private static void textField(EntryInfo info, Function<String,Number> f, Pattern pattern, double min, double max, boolean cast) {
+    private void textField(EntryInfo info, Function<String,Number> f, Pattern pattern, double min, double max, boolean cast) {
         boolean isNumber = pattern != null;
         info.widget = (BiFunction<EditBox, Button, Predicate<String>>) (t, b) -> s -> {
             s = s.trim();
@@ -153,10 +148,10 @@ public class TinyConfig {
         };
     }
 
-    public static void write() {
+    public void write() {
         try {
             if (!Files.exists(path)) Files.createFile(path);
-            Files.write(path, gson.toJson(configClass.newInstance()).getBytes());
+            Files.write(path, gson.toJson(this).getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,88 +159,7 @@ public class TinyConfig {
     }
 
     public Screen getScreen(Screen parent) {
-        return new TinyConfigScreen(parent);
-    }
-
-    private static class TinyConfigScreen extends Screen {
-        protected TinyConfigScreen(Screen parent) {
-            super(new TextComponent("CocoaInput config"));
-            this.parent = parent;
-        }
-        private final Screen parent;
-
-        @Override
-        protected void init() {
-            super.init();
-
-            Button done = this.addRenderableWidget(new Button(this.width/2 - 100,this.height - 28,200,20,
-                    new TranslatableComponent("gui.done"), (button) -> {
-                for (EntryInfo info : entries)
-                    try { info.field.set(null, info.value); }
-                    catch (IllegalAccessException ignore) {}
-                write();
-                minecraft.setScreen(parent);
-            }));
-
-            int y = 45;
-            for (EntryInfo info : entries) {
-                if (info.widget instanceof Map.Entry) {
-                    Map.Entry<Button.OnPress,Function<Object,BaseComponent>> widget = (Map.Entry<Button.OnPress, Function<Object, BaseComponent>>) info.widget;
-                    addRenderableWidget(new Button(width-85,y,info.width,20, widget.getValue().apply(info.value), widget.getKey()));
-                }
-                else {
-                    EditBox widget = addWidget(new EditBox(font, width-85, y, info.width, 20, null));
-                    widget.setValue(info.tempValue);
-
-                    Predicate<String> processor = ((BiFunction<EditBox, Button, Predicate<String>>) info.widget).apply(widget,done);
-                    widget.setFilter(processor);
-                    processor.test(info.tempValue);
-
-                    addWidget(widget);
-                }
-                y += 30;
-            }
-
-        }
-
-        @Override
-        public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
-            this.renderBackground(matrices);
-
-            if (mouseY >= 40 && mouseY <= 39 + entries.size()*30) {
-                int low = ((mouseY-10)/30)*30 + 10 + 2;
-                fill(matrices, 0, low, width, low+30-4, 0x33FFFFFF);
-            }
-
-            super.render(matrices, mouseX, mouseY, delta);
-            drawCenteredString(matrices, font, title, width/2, 15, 0xFFFFFF);
-
-            int y = 40;
-            for (EntryInfo info : entries) {
-				drawString(matrices, font, new TextComponent(info.comment), 12, y + 10, 0xFFFFFF);
-				/*
-                if (info.error != null && info.error.getKey().isMouseOver(mouseX,mouseY))
-                    renderTooltip(matrices, info.error.getValue(), mouseX, mouseY);
-                else if (mouseY >= y && mouseY < (y + 30)) {
-                    if (info.dynamicTooltip != null) {
-                        try {
-                            renderComponentTooltip(matrices, (List<ITextComponent>) info.dynamicTooltip.invoke(null, entries), mouseX, mouseY);
-                            y += 30;
-                            continue;
-                        } catch (Exception e) { e.printStackTrace(); }
-                    }
-                    String key = translationPrefix + info.field.getName() + ".tooltip";
-
-                    List<ITextComponent> list = new ArrayList<>();
-                    for (String str : I18n.get(key).split("\n"))
-                         list.add(new TextComponent(str));
-                    renderComponentTooltip(matrices, list, mouseX, mouseY);
-
-                }
-                */
-                y += 30;
-            }
-        }
+        return new ForgeConfigScreen(parent, this);
     }
 
     @Retention(RetentionPolicy.RUNTIME)
