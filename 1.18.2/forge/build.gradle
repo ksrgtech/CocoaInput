@@ -12,11 +12,18 @@ buildscript {
     	classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
+
+evaluationDependsOn(':core')
 
 version = '4.0.4'
 group = 'jp.axer.cocoainput' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -36,7 +43,7 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     // accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
-    accessTransformer = file('../src/forge/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/forge/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -51,13 +58,12 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 			arg "-mixin.config=cocoainput.mixins.json"
 
-			sourceSets.main.java.srcDirs+=['../src/forge/java']
-			sourceSets.main.java.srcDirs+=['../src/main/java']
-			sourceSets.main.resources.srcDirs+=['../src/forge/resources']
-			sourceSets.main.resources.srcDirs+=['../src/main/resources']
+			sourceSets.main.java.srcDirs=['src/forge/java']
+			sourceSets.main.resources.srcDirs=['src/forge/resources']
             mods {
                 examplemod {
                     source sourceSets.main
+                    source project(':core').sourceSets.main
                 }
             }
         }
@@ -109,8 +115,13 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 
+    implementation project(':core')
 }
 
+tasks.build {
+    // domain
+    dependsOn(tasks.shadowJar)
+}
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
