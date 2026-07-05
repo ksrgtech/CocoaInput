@@ -1,12 +1,6 @@
 package jp.axer.cocoainput;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import com.sun.jna.Platform;
 
@@ -24,6 +18,7 @@ public class CocoaInput {
     private static SimpleLogger logger;
 	
 	public CocoaInput(String loader, SimpleLogger logger, MinecraftRawWindowIdAccessor w, NativeLibraryLoader n, ScreenScaleFactorGetter s) {
+		CocoaInput.logger = logger;
 		logger.log("Modloader:" + loader);
 		try {
 			if (Platform.isMac()) {
@@ -37,8 +32,10 @@ public class CocoaInput {
 				CocoaInput.applyController(new DummyController(logger));
 			}
 			logger.log("CocoaInput has been initialized.");
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			logger.log("Failed to initialize native CocoaInput controller: " + e.getClass().getName() + ": " + e.getMessage());
 			e.printStackTrace();
+			CocoaInput.applyFallbackController(logger);
 		}
 	}
 
@@ -49,7 +46,17 @@ public class CocoaInput {
 
 	public static void applyController(CocoaInputController controller) throws IOException {
 		CocoaInput.controller = controller;
-		logger.log("CocoaInput is now using controller:" + controller.getClass().toString());
+		if (logger != null) {
+			logger.log("CocoaInput is now using controller:" + controller.getClass());
+		}
+	}
+
+	private static void applyFallbackController(SimpleLogger logger) {
+		try {
+			CocoaInput.applyController(new DummyController(logger));
+		} catch (IOException ignored) {
+			CocoaInput.controller = new DummyController(logger);
+		}
 	}
 
 	public static CocoaInputController getController() {

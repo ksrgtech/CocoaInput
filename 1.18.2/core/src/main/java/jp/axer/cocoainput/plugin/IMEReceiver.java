@@ -1,6 +1,5 @@
 package jp.axer.cocoainput.plugin;
 
-import jp.axer.cocoainput.CocoaInput;
 import jp.axer.cocoainput.arch.win.Logger;
 import jp.axer.cocoainput.domain.*;
 
@@ -124,5 +123,5 @@ public abstract class IMEReceiver {
 	}
 
 	protected void notifyParent(String text) {
-	};
+	}
 }

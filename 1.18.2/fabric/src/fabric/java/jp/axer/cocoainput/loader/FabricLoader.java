@@ -29,13 +29,14 @@ public class FabricLoader implements ClientModInitializer {
 	public void onWindowLaunched(){
         var logger = new ModLogger();
         loggerInstance = logger;
+        MinecraftNativeFolderAccessor minecraftNativeFolderAccessor = () -> Minecraft.getInstance().gameDirectory.getAbsolutePath();
         MinecraftRawWindowIdAccessor rawWindowIdAccessor = () -> Minecraft.getInstance().getWindow().getWindow();
-        var nativeLibraryLoader = new LibraryCopyImpl(logger, null);
+        var nativeLibraryLoader = new LibraryCopyImpl(logger, null, minecraftNativeFolderAccessor);
         ScreenScaleFactorGetter screenScaleFactorGetter = () -> Minecraft.getInstance().getWindow().getGuiScale();
 
 		this.cocoainput = new CocoaInput("Fabric", logger, rawWindowIdAccessor, nativeLibraryLoader, screenScaleFactorGetter);
 		logger.log("Fabric config setup");
-        logger.log("Config path:"+net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("cocoainput.json").toString());
+        logger.log("Config path:"+ net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("cocoainput.json"));
 		config = new WithDefaults("cocoainput",net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("cocoainput.json"), WithDefaults.class);
         logger.log("ConfigPack:"+config.isAdvancedPreeditDraw()+" "+config.isNativeCharTyped());
 	}

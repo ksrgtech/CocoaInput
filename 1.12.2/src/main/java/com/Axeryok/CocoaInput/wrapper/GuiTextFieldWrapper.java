@@ -109,8 +109,8 @@ public class GuiTextFieldWrapper implements IMEReceiver {
 	@Override
 	public Rect getRect() {
 		return new Rect(//{x,y}
-				(owner.fontRendererInstance.getStringWidth(owner.getText().substring(0, originalCursorPosition))+ (owner.enableBackgroundDrawing ? owner.xPosition + 4 : owner.xPosition)),
-				(owner.fontRendererInstance.FONT_HEIGHT+(owner.enableBackgroundDrawing ? owner.yPosition + (owner.height - 8) / 2 : owner.yPosition)),
+				(owner.fontRenderer.getStringWidth(owner.getText().substring(0, originalCursorPosition))+ (owner.enableBackgroundDrawing ? owner.x + 4 : owner.x)),
+				(owner.fontRenderer.FONT_HEIGHT+(owner.enableBackgroundDrawing ? owner.y + (owner.height - 8) / 2 : owner.y)),
 				owner.width,
 				owner.height
 

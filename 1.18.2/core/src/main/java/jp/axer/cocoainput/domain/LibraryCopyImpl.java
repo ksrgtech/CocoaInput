@@ -11,11 +11,9 @@ import java.util.zip.ZipFile;
 import jp.axer.cocoainput.CocoaInput;
 import org.apache.commons.io.IOUtils;
 
-import jp.axer.cocoainput.domain.*;
-
 public class LibraryCopyImpl implements NativeLibraryLoader {
-    private SimpleLogger logger;
-    private String zipsource;
+    private final SimpleLogger logger;
+    private final String zipsource;
     private final MinecraftNativeFolderAccessor minecraftNativeFolderAccessor;
 
     public LibraryCopyImpl(SimpleLogger logger, String zipsource, MinecraftNativeFolderAccessor minecraftNativeFolderAccessor) {
@@ -30,8 +28,9 @@ public class LibraryCopyImpl implements NativeLibraryLoader {
             libFile = CocoaInput.class.getResourceAsStream("/" + libraryPath);
         } else {
             try {//Modファイルを検出し、jar内からライブラリを取り出す
-                ZipFile jarfile = new ZipFile(zipsource);
-                libFile = jarfile.getInputStream(new ZipEntry(libraryPath));
+                try (ZipFile jarfile = new ZipFile(zipsource)) {
+                    libFile = jarfile.getInputStream(new ZipEntry(libraryPath));
+                }
             } catch (FileNotFoundException e) {//存在しない場合はデバッグモードであるのでクラスパスからライブラリを取り出す
                 logger.log("Couldn't get library path. Is this debug mode?'");
                 libFile = ClassLoader.getSystemResourceAsStream(libraryPath);
