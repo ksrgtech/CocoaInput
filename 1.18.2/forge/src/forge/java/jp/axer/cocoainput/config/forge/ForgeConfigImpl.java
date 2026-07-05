@@ -171,5 +171,4 @@ public class ForgeConfigImpl {
         double min() default Double.MIN_NORMAL;
         double max() default Double.MAX_VALUE;
     }
-
 }
