@@ -37,6 +37,26 @@ jobs:
             gradle_cmd: ./gradlew
             mod_type: forge
 
+          # 1.13.2 Forge builds
+          - version: "1.13.2"
+            os: macos-15-intel
+            # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
+            java_distribution: 'corretto'
+            java_version: '8'
+            build_script: build_lib_for_mac.sh
+            gradle_cmd: ./gradlew
+            mod_type: forge
+
+          - version: "1.13.2"
+            os: macos-15
+            # temurin does not provide JDK 8 series via their API: perhaps it's their bug?
+            java_distribution: 'corretto'
+            java_version: '8'
+            build_script: build_lib_for_mac.sh
+            gradle_cmd: ./gradlew
+            mod_type: forge
+
+
           # 1.18.2 Forge builds
           - version: "1.18.2"
             os: ubuntu-22.04
@@ -151,10 +171,18 @@ jobs:
     - name: Build 1.12.2 mod
       if: matrix.version == '1.12.2'
       shell: bash
+      # TODO(kisaragi): unify directory structure.
       run: |
         cd ${{ matrix.version }}
         ${{ matrix.gradle_cmd }} build --no-daemon
-    
+
+    - name: Build 1.13.2 mod
+      if: matrix.version == '1.13.2'
+      shell: bash
+      run: |
+        cd ${{ matrix.version }}/${{ matrix.mod_type }}
+        ${{ matrix.gradle_cmd }} build --no-daemon
+
     - name: Build 1.18.2 mod (Linux/macOS/Windows)
       if: matrix.version == '1.18.2'
       shell: bash
@@ -179,8 +207,8 @@ jobs:
         name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ steps.os.outputs.os }}-${{ steps.detect-arch.outputs.architecture }}
         path: ${{ matrix.version }}/build/libs/*.jar
     
-    - name: Upload 1.18.2 artifacts
-      if: matrix.version == '1.18.2'
+    - name: Upload 1.13.2/1.18.2 artifacts
+      if: matrix.version == '1.13.2' || matrix.version == '1.18.2'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.version }}-${{ matrix.mod_type }}-${{ steps.os.outputs.os }}-${{ steps.detect-arch.outputs.architecture }}
