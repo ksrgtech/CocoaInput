@@ -1,0 +1,20 @@
+# Gradle files
+../.gradle
+build/
+!gradle-wrapper.jar
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.project
+.classpath
+bin/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+run
