@@ -3,7 +3,7 @@ Support IME - Input Method Editor(Japanese,Chinese,Korean) in Minecraft on Multi
 
 ## Repository Structure
 This repository contains MOD code for multiple Minecraft versions in separate directories:
-- `1.12.2/` - MOD code for Minecraft 1.9-1.12.2 (Forge)
+- `1.12.2/forge/` - MOD code for Minecraft 1.9-1.12.2 (Forge)
 - `1.18.2/` - MOD code for Minecraft 1.18.2+ (Forge and Fabric)
 - `libcocoainput/` - Native platform libraries (shared across all versions)
 
@@ -23,10 +23,10 @@ To compile them, run one of below scripts which is your platform.
 
 ### For Minecraft 1.12.2 (Forge only)
 3. Compile Forge Mod<br />
-Type below command. The mod will be located in "1.12.2/build/libs".
+Type below command. The mod will be located in "1.12.2/forge/build/libs".
 ```Bash
-cd 1.12.2
-gradle build
+cd 1.12.2/forge
+./gradlew build
 ```
 
 ### For Minecraft 1.18.2+

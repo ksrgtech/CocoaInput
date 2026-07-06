@@ -1,5 +1,6 @@
 package com.Axeryok.CocoaInput.arch.darwin;
 
+import com.Axeryok.CocoaInput.wrapper.LogWrapper;
 import org.apache.logging.log4j.Level;
 
 import com.Axeryok.CocoaInput.ModLogger;
@@ -23,18 +24,18 @@ public class CallbackFunction {
 	//used to provide Objective-C with logging way
 	public static Callback Func_log=new Callback(){
 		public void invoke(String msg){
-			FMLLog.log("CocoaInput:Objective-C", Level.INFO, msg);
+			LogWrapper.log("CocoaInput:Objective-C", Level.INFO, msg);
 		}
 	};
 	public static Callback Func_error=new Callback(){
 		public void invoke(String msg){
-			FMLLog.log("CocoaInput:Objective-C", Level.INFO, msg);
+			LogWrapper.log("CocoaInput:Objective-C", Level.INFO, msg);
 		}
 	};
 	public static Callback Func_debug=new Callback(){
 		public void invoke(String msg){
 		if(ModLogger.debugMode){
-			FMLLog.log("CocoaInput:Objective-C/DEBUG", Level.INFO, msg);
+			LogWrapper.log("CocoaInput:Objective-C/DEBUG", Level.INFO, msg);
 		}
 		}
 	};
